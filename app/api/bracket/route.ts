@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { loadTournament, saveTournament, resetTournament } from '@/lib/storage';
-import { advanceWinner } from '@/lib/data';
+import { advanceWinner, setMatchMeta } from '@/lib/data';
 
 export async function GET() {
   const data = await loadTournament();
@@ -28,6 +28,13 @@ export async function POST(req: NextRequest) {
   if (action === 'setWinner' && matchId && winner) {
     const current = await loadTournament();
     const updated = advanceWinner(current, matchId, winner);
+    await saveTournament(updated);
+    return NextResponse.json(updated);
+  }
+
+  if (action === 'setMatchMeta' && matchId) {
+    const current = await loadTournament();
+    const updated = setMatchMeta(current, matchId, body.result ?? null, body.scheduledDate ?? null);
     await saveTournament(updated);
     return NextResponse.json(updated);
   }

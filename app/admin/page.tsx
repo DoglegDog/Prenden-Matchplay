@@ -42,10 +42,16 @@ export default function AdminPage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'setWinner', matchId, winner, password }),
     });
-    if (res.ok) {
-      const updated = await res.json();
-      setData(updated);
-    }
+    if (res.ok) setData(await res.json());
+  }
+
+  async function setMeta(matchId: string, result: string, scheduledDate: string) {
+    const res = await fetch('/api/bracket', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'setMatchMeta', matchId, result, scheduledDate, password }),
+    });
+    if (res.ok) setData(await res.json());
   }
 
   async function reset() {
@@ -129,6 +135,7 @@ export default function AdminPage() {
             roundModes={TEAM_ROUND_MODES}
             adminMode={true}
             onSetWinner={setWinner}
+            onSetMeta={setMeta}
           />
         )}
         {tab === 'einzel' && (
@@ -137,6 +144,7 @@ export default function AdminPage() {
             roundDates={EINZEL_ROUND_DATES}
             adminMode={true}
             onSetWinner={setWinner}
+            onSetMeta={setMeta}
           />
         )}
       </div>

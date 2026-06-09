@@ -172,3 +172,39 @@ export function advanceWinner(tournament: Tournament, matchId: string, winner: s
 
   return t;
 }
+
+// Update result and/or scheduled date for a match
+export function setMatchMeta(
+  tournament: Tournament,
+  matchId: string,
+  result: string | null,
+  scheduledDate: string | null,
+): Tournament {
+  const t = JSON.parse(JSON.stringify(tournament)) as Tournament;
+  const rounds: Array<keyof Side> = ['r1', 'r2', 'r3', 'r4'];
+
+  const update = (match: { id: string; result?: string | null; scheduledDate?: string | null }) => {
+    if (match.id === matchId) {
+      match.result = result;
+      match.scheduledDate = scheduledDate;
+      return true;
+    }
+    return false;
+  };
+
+  for (const tournType of ['team', 'einzel'] as const) {
+    for (const side of ['left', 'right'] as const) {
+      const bracket = t[tournType][side];
+      for (const round of rounds) {
+        for (const match of bracket[round]) {
+          if (update(match)) return t;
+        }
+      }
+    }
+    for (const matchKey of ['final', 'third'] as const) {
+      if (update(t[tournType][matchKey])) return t;
+    }
+  }
+
+  return t;
+}

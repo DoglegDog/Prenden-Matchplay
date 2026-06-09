@@ -5,6 +5,8 @@ export interface Match {
   winner: string | null;
   loser: string | null;
   date?: string | null;
+  result?: string | null;       // e.g. "4&3"
+  scheduledDate?: string | null; // e.g. "17.6."
 }
 
 export interface Side {

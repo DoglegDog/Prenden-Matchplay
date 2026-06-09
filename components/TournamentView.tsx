@@ -9,75 +9,78 @@ interface Props {
   roundModes?: Record<string, string>;
   adminMode?: boolean;
   onSetWinner?: (matchId: string, winner: string) => void;
+  onSetMeta?: (matchId: string, result: string, scheduledDate: string) => void;
 }
 
+// Must match BracketSide constants exactly
+const ROUND_W = 158;
+const COL_GAP = 32;
+const SIDE_GAP = 16; // gap between bracket side and center column
+
+const ROUNDS_L = ['r1', 'r2', 'r3', 'r4'] as const;
 const ROUND_LABELS = ['1. Runde', 'Achtelfinale', 'Viertelfinale', 'Halbfinale'];
 
-export default function TournamentView({ bracket, roundDates, roundModes, adminMode, onSetWinner }: Props) {
-  return (
-    <div className="tournament-wrapper">
-      {/* Round headers */}
-      <div className="round-headers">
-        {/* Left side headers (outside → in) */}
-        {ROUND_LABELS.map((label, i) => (
-          <div key={`lh-${i}`} className="round-header">
-            <div className="round-label">{label}</div>
-            {roundModes && <div className="round-mode">{roundModes[['r1','r2','r3','r4'][i]]}</div>}
-            <div className="round-date">{roundDates[['r1','r2','r3','r4'][i]]}</div>
-          </div>
-        ))}
+export default function TournamentView({ bracket, roundDates, roundModes, adminMode, onSetWinner, onSetMeta }: Props) {
+  const leftRounds = ROUNDS_L;
+  const rightRounds = [...ROUNDS_L].reverse();
+  const rightLabels = [...ROUND_LABELS].reverse();
+  const rightKeys = ['r4', 'r3', 'r2', 'r1'] as const;
 
-        {/* Center: Finale */}
-        <div className="round-header center-header">
-          <div className="round-label text-red-400 font-bold">Finale</div>
+  return (
+    <div style={{ overflowX: 'auto', padding: '8px 24px 40px' }}>
+      {/* ── Header row — exact same flex structure as bracket row ── */}
+      <div style={{ display: 'flex', gap: SIDE_GAP, marginBottom: 10, alignItems: 'flex-end' }}>
+        {/* Left headers */}
+        <div style={{ display: 'flex', gap: COL_GAP, flexShrink: 0 }}>
+          {leftRounds.map((rk, i) => (
+            <div key={rk} style={{ width: ROUND_W, textAlign: 'center', flexShrink: 0 }}>
+              <div className="round-label">{ROUND_LABELS[i]}</div>
+              {roundModes && <div className="round-mode">{roundModes[rk]}</div>}
+              <div className="round-date">{roundDates[rk]}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Center header */}
+        <div style={{ width: 200, flexShrink: 0, textAlign: 'center' }}>
+          <div className="round-label" style={{ color: '#4ade80' }}>Finale</div>
           {roundModes && <div className="round-mode">{roundModes['final']}</div>}
           <div className="round-date">{roundDates['final']}</div>
         </div>
 
-        {/* Right side headers (in → outside) */}
-        {[...ROUND_LABELS].reverse().map((label, i) => (
-          <div key={`rh-${i}`} className="round-header">
-            <div className="round-label">{label}</div>
-            {roundModes && <div className="round-mode">{roundModes[['r4','r3','r2','r1'][i]]}</div>}
-            <div className="round-date">{roundDates[['r4','r3','r2','r1'][i]]}</div>
-          </div>
-        ))}
+        {/* Right headers */}
+        <div style={{ display: 'flex', gap: COL_GAP, flexShrink: 0 }}>
+          {rightRounds.map((rk, i) => (
+            <div key={rk} style={{ width: ROUND_W, textAlign: 'center', flexShrink: 0 }}>
+              <div className="round-label">{rightLabels[i]}</div>
+              {roundModes && <div className="round-mode">{roundModes[rightKeys[i]]}</div>}
+              <div className="round-date">{roundDates[rightKeys[i]]}</div>
+            </div>
+          ))}
+        </div>
       </div>
 
-      {/* Bracket area */}
-      <div className="bracket-area">
-        <BracketSide
-          side={bracket.left}
-          adminMode={adminMode}
-          onSetWinner={onSetWinner}
-        />
+      {/* ── Bracket row ── */}
+      <div style={{ display: 'flex', gap: SIDE_GAP, alignItems: 'center' }}>
+        <BracketSide side={bracket.left} adminMode={adminMode} onSetWinner={onSetWinner} onSetMeta={onSetMeta} />
 
-        {/* Center column: Finale + 3. Platz */}
+        {/* Center: Finale + 3. Platz */}
         <div className="center-column">
-          <div className="finale-box">
-            <div className="text-xs text-white/50 uppercase tracking-widest mb-2 text-center">Finale</div>
-            <BracketMatch
-              match={bracket.final}
-              adminMode={adminMode}
-              onSetWinner={onSetWinner}
-            />
+          <div>
+            <div className="center-label">Finale</div>
+            <div className="finale-match-wrapper">
+              <BracketMatch match={bracket.final} adminMode={adminMode} onSetWinner={onSetWinner} onSetMeta={onSetMeta} />
+            </div>
           </div>
-          <div className="mt-6">
-            <div className="text-xs text-white/50 uppercase tracking-widest mb-2 text-center">3. Platz</div>
-            <BracketMatch
-              match={bracket.third}
-              adminMode={adminMode}
-              onSetWinner={onSetWinner}
-            />
+          <div>
+            <div className="center-label">3. Platz</div>
+            <div className="finale-match-wrapper">
+              <BracketMatch match={bracket.third} adminMode={adminMode} onSetWinner={onSetWinner} onSetMeta={onSetMeta} />
+            </div>
           </div>
         </div>
 
-        <BracketSide
-          side={bracket.right}
-          mirror={true}
-          adminMode={adminMode}
-          onSetWinner={onSetWinner}
-        />
+        <BracketSide side={bracket.right} mirror adminMode={adminMode} onSetWinner={onSetWinner} onSetMeta={onSetMeta} />
       </div>
     </div>
   );
