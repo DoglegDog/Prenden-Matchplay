@@ -39,7 +39,10 @@ export default function TournamentView({ bracket, roundDates, roundModes, adminM
   const rightKeys = ['r4', 'r3', 'r2', 'r1'] as const;
 
   return (
-    <div style={{ overflowX: 'auto', padding: '8px 24px 40px' }}>
+    // Outer: nur overflow, kein padding — damit rechter Rand nicht verschwindet
+    <div style={{ overflowX: 'auto', paddingTop: 8, paddingBottom: 40 }}>
+      {/* Inneres Div mit fit-content erzwingt symmetrisches Padding beim Scrollen */}
+      <div style={{ width: 'fit-content', minWidth: '100%', padding: '0 24px', boxSizing: 'border-box' }}>
       {/* ── Header row — exact same flex structure as bracket row ── */}
       <div style={{ display: 'flex', gap: SIDE_GAP, marginBottom: 10, alignItems: 'flex-end' }}>
         {/* Left headers */}
@@ -87,7 +90,9 @@ export default function TournamentView({ bracket, roundDates, roundModes, adminM
             </div>
           </div>
           <div style={{ position: 'absolute', left: 0, right: 0, top: THIRD_TOP - 18 }}>
-            <div className="center-label">3. Platz</div>
+            <div className="center-label third-center-label">
+              <span className="bronze-icon">🥉</span> 3. Platz
+            </div>
             <div className="third-match-wrapper">
               <BracketMatch match={bracket.third} adminMode={adminMode} onSetWinner={onSetWinner} onClearWinner={onClearWinner} onSetMeta={onSetMeta} />
             </div>
@@ -96,6 +101,7 @@ export default function TournamentView({ bracket, roundDates, roundModes, adminM
 
         <BracketSide side={bracket.right} mirror adminMode={adminMode} onSetWinner={onSetWinner} onClearWinner={onClearWinner} onSetMeta={onSetMeta} />
       </div>
+      </div>{/* end inner padding wrapper */}
     </div>
   );
 }

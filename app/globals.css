@@ -467,11 +467,26 @@ body {
   border-bottom-color: rgba(201, 168, 76, 0.25);
 }
 
-/* ── 3. Platz card: smaller than finale ── */
+/* ── 3. Platz card: kleiner, bronzefarbend ── */
 .third-match-wrapper {
   height: 76px;
   width: 100%;
   position: relative;
+}
+
+.third-match-wrapper .match-card {
+  border-color: #a0522d;
+  background: rgba(160, 82, 45, 0.1);
+  box-shadow: 0 0 14px rgba(160, 82, 45, 0.2), 0 2px 8px rgba(0,0,0,0.4);
+}
+
+.third-match-wrapper .player-slot.winner {
+  background: rgba(160, 82, 45, 0.22);
+  color: #d4956a;
+}
+
+.third-match-wrapper .match-date-row {
+  border-bottom-color: rgba(160, 82, 45, 0.25);
 }
 
 /* ── Finale label with trophy ── */
@@ -482,6 +497,15 @@ body {
 }
 
 .trophy-icon {
+  font-size: 1rem;
+  vertical-align: middle;
+}
+
+.third-center-label {
+  color: #a0522d !important;
+}
+
+.bronze-icon {
   font-size: 1rem;
   vertical-align: middle;
 }
