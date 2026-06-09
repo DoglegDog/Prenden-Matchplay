@@ -445,10 +445,44 @@ body {
   filter: brightness(1.1);
 }
 
-/* ── Larger center column cards (Finale / 3.Platz) ── */
+/* ── Finale card: gold, larger ── */
 .finale-match-wrapper {
-  height: 90px;
+  height: 104px;
   width: 100%;
   position: relative;
+}
+
+.finale-match-wrapper .match-card {
+  border-color: var(--gold);
+  background: rgba(201, 168, 76, 0.08);
+  box-shadow: 0 0 18px rgba(201, 168, 76, 0.18), 0 2px 8px rgba(0,0,0,0.4);
+}
+
+.finale-match-wrapper .player-slot.winner {
+  background: rgba(201, 168, 76, 0.22);
+  color: #f0d080;
+}
+
+.finale-match-wrapper .match-date-row {
+  border-bottom-color: rgba(201, 168, 76, 0.25);
+}
+
+/* ── 3. Platz card: smaller than finale ── */
+.third-match-wrapper {
+  height: 76px;
+  width: 100%;
+  position: relative;
+}
+
+/* ── Finale label with trophy ── */
+.finale-center-label {
+  color: var(--gold) !important;
+  font-size: 0.82rem !important;
+  letter-spacing: 0.1em;
+}
+
+.trophy-icon {
+  font-size: 1rem;
+  vertical-align: middle;
 }
 

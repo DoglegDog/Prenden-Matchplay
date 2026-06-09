@@ -68,14 +68,16 @@ export default function TournamentView({ bracket, roundDates, roundModes, adminM
         {/* Center: Finale + 3. Platz */}
         <div className="center-column">
           <div>
-            <div className="center-label">Finale</div>
+            <div className="center-label finale-center-label">
+              <span className="trophy-icon">🏆</span> Finale
+            </div>
             <div className="finale-match-wrapper">
               <BracketMatch match={bracket.final} adminMode={adminMode} onSetWinner={onSetWinner} onClearWinner={onClearWinner} onSetMeta={onSetMeta} />
             </div>
           </div>
           <div>
             <div className="center-label">3. Platz</div>
-            <div className="finale-match-wrapper">
+            <div className="third-match-wrapper">
               <BracketMatch match={bracket.third} adminMode={adminMode} onSetWinner={onSetWinner} onClearWinner={onClearWinner} onSetMeta={onSetMeta} />
             </div>
           </div>
