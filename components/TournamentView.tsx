@@ -16,7 +16,18 @@ interface Props {
 // Must match BracketSide constants exactly
 const ROUND_W = 190;
 const COL_GAP = 32;
-const SIDE_GAP = 16; // gap between bracket side and center column
+const SIDE_GAP = 16;
+const SLOT = 82;       // MATCH_H(76) + GAP(6)
+const TOTAL_H = 8 * SLOT; // 656px
+
+function matchTop(roundIdx: number, matchIdx: number) {
+  const slotsPerMatch = Math.pow(2, roundIdx);
+  return matchIdx * slotsPerMatch * SLOT + ((slotsPerMatch - 1) / 2) * SLOT;
+}
+
+// r3 = Viertelfinale (roundIdx 2)
+const FINALE_TOP = matchTop(2, 0);  // 123px — oberes Viertelfinale
+const THIRD_TOP  = matchTop(2, 1);  // 451px — unteres Viertelfinale
 
 const ROUNDS_L = ['r1', 'r2', 'r3', 'r4'] as const;
 const ROUND_LABELS = ['1. Runde', 'Achtelfinale', 'Viertelfinale', 'Halbfinale'];
@@ -62,12 +73,12 @@ export default function TournamentView({ bracket, roundDates, roundModes, adminM
       </div>
 
       {/* ── Bracket row ── */}
-      <div style={{ display: 'flex', gap: SIDE_GAP, alignItems: 'center' }}>
+      <div style={{ display: 'flex', gap: SIDE_GAP, alignItems: 'flex-start' }}>
         <BracketSide side={bracket.left} adminMode={adminMode} onSetWinner={onSetWinner} onClearWinner={onClearWinner} onSetMeta={onSetMeta} />
 
-        {/* Center: Finale + 3. Platz */}
-        <div className="center-column">
-          <div>
+        {/* Center: Finale + 3. Platz — absolut positioniert auf Viertelfinale-Höhe */}
+        <div style={{ position: 'relative', width: 200, height: TOTAL_H, flexShrink: 0 }}>
+          <div style={{ position: 'absolute', left: 0, right: 0, top: FINALE_TOP - 22 }}>
             <div className="center-label finale-center-label">
               <span className="trophy-icon">🏆</span> Finale
             </div>
@@ -75,7 +86,7 @@ export default function TournamentView({ bracket, roundDates, roundModes, adminM
               <BracketMatch match={bracket.final} adminMode={adminMode} onSetWinner={onSetWinner} onClearWinner={onClearWinner} onSetMeta={onSetMeta} />
             </div>
           </div>
-          <div>
+          <div style={{ position: 'absolute', left: 0, right: 0, top: THIRD_TOP - 18 }}>
             <div className="center-label">3. Platz</div>
             <div className="third-match-wrapper">
               <BracketMatch match={bracket.third} adminMode={adminMode} onSetWinner={onSetWinner} onClearWinner={onClearWinner} onSetMeta={onSetMeta} />
