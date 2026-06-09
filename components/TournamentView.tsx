@@ -1,4 +1,5 @@
 'use client';
+import { useRef, useState, useEffect } from 'react';
 import { TournamentBracket } from '@/lib/types';
 import BracketSide from './BracketSide';
 import BracketMatch from './BracketMatch';
@@ -17,8 +18,11 @@ interface Props {
 const ROUND_W = 190;
 const COL_GAP = 32;
 const SIDE_GAP = 16;
+const PADDING = 24;
 const SLOT = 82;       // MATCH_H(76) + GAP(6)
 const TOTAL_H = 8 * SLOT; // 656px
+const BRACKET_SIDE_W = 4 * ROUND_W + 3 * COL_GAP; // 856px
+const NATURAL_W = 2 * BRACKET_SIDE_W + 200 + 2 * SIDE_GAP + 2 * PADDING; // 1992px
 
 function matchTop(roundIdx: number, matchIdx: number) {
   const slotsPerMatch = Math.pow(2, roundIdx);
@@ -38,11 +42,33 @@ export default function TournamentView({ bracket, roundDates, roundModes, adminM
   const rightLabels = [...ROUND_LABELS].reverse();
   const rightKeys = ['r4', 'r3', 'r2', 'r1'] as const;
 
+  const outerRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(1);
+
+  useEffect(() => {
+    const el = outerRef.current;
+    if (!el) return;
+    const obs = new ResizeObserver(([entry]) => {
+      const w = entry.contentRect.width;
+      setScale(w > 0 ? Math.min(1, w / NATURAL_W) : 1);
+    });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
   return (
-    // Outer: nur overflow, kein padding — damit rechter Rand nicht verschwindet
-    <div style={{ overflowX: 'auto', paddingTop: 8, paddingBottom: 40 }}>
-      {/* Inneres Div mit fit-content erzwingt symmetrisches Padding beim Scrollen */}
-      <div style={{ width: 'fit-content', minWidth: '100%', padding: '0 24px', boxSizing: 'border-box' }}>
+    // Outer: misst die verfügbare Breite, kein overflow
+    <div ref={outerRef} style={{ overflow: 'hidden', paddingTop: 8, paddingBottom: 40 }}>
+      {/* Inneres Div: skaliert den gesamten Bracket-Inhalt */}
+      <div style={{
+        width: NATURAL_W,
+        transformOrigin: 'top left',
+        transform: `scale(${scale})`,
+        // Höhe des skalierten Inhalts für den äußeren Container reservieren
+        marginBottom: `calc((${TOTAL_H + 80}px * ${scale}) - ${TOTAL_H + 80}px)`,
+        padding: `0 ${PADDING}px`,
+        boxSizing: 'border-box',
+      }}>
       {/* ── Header row — exact same flex structure as bracket row ── */}
       <div style={{ display: 'flex', gap: SIDE_GAP, marginBottom: 10, alignItems: 'flex-end' }}>
         {/* Left headers */}

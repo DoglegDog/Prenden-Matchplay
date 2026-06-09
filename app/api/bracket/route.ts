@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { loadTournament, saveTournament, resetTournament } from '@/lib/storage';
-import { advanceWinner, clearWinner, setMatchMeta } from '@/lib/data';
+import { advanceWinner, clearWinner, setMatchMeta, setPrelimWinner, clearPrelimWinner } from '@/lib/data';
 
 export async function GET() {
   const data = await loadTournament();
@@ -35,6 +35,20 @@ export async function POST(req: NextRequest) {
   if (action === 'clearWinner' && matchId) {
     const current = await loadTournament();
     const updated = clearWinner(current, matchId);
+    await saveTournament(updated);
+    return NextResponse.json(updated);
+  }
+
+  if (action === 'setPrelimWinner' && body.prelimId && body.winner) {
+    const current = await loadTournament();
+    const updated = setPrelimWinner(current, body.prelimId, body.winner);
+    await saveTournament(updated);
+    return NextResponse.json(updated);
+  }
+
+  if (action === 'clearPrelimWinner' && body.prelimId) {
+    const current = await loadTournament();
+    const updated = clearPrelimWinner(current, body.prelimId);
     await saveTournament(updated);
     return NextResponse.json(updated);
   }

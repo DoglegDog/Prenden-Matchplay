@@ -23,7 +23,17 @@ export interface TournamentBracket {
   third: Match;
 }
 
+export interface PrelimMatch {
+  id: string;
+  matchId: string;   // welches r1-Match wird befüllt
+  slot: 'p1' | 'p2'; // welcher Slot des r1-Matches
+  p1: string;
+  p2: string;
+  winner: string | null;
+}
+
 export interface Tournament {
   team: TournamentBracket;
   einzel: TournamentBracket;
+  prelims: PrelimMatch[];
 }

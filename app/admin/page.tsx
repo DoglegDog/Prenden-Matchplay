@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Tournament } from '@/lib/types';
 import TournamentView from '@/components/TournamentView';
+import PrelimSection from '@/components/PrelimSection';
 import { TEAM_ROUND_DATES, TEAM_ROUND_MODES, EINZEL_ROUND_DATES } from '@/lib/data';
 
 type Tab = 'team' | 'einzel';
@@ -50,6 +51,24 @@ export default function AdminPage() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'clearWinner', matchId, password }),
+    });
+    if (res.ok) setData(await res.json());
+  }
+
+  async function setPrelimWinner(prelimId: string, winner: string) {
+    const res = await fetch('/api/bracket', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'setPrelimWinner', prelimId, winner, password }),
+    });
+    if (res.ok) setData(await res.json());
+  }
+
+  async function clearPrelimWinner(prelimId: string) {
+    const res = await fetch('/api/bracket', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'clearPrelimWinner', prelimId, password }),
     });
     if (res.ok) setData(await res.json());
   }
@@ -149,14 +168,22 @@ export default function AdminPage() {
           />
         )}
         {tab === 'einzel' && (
-          <TournamentView
-            bracket={data.einzel}
-            roundDates={EINZEL_ROUND_DATES}
-            adminMode={true}
-            onSetWinner={setWinner}
-            onClearWinner={clearWinner}
-            onSetMeta={setMeta}
-          />
+          <>
+            <PrelimSection
+              prelims={data.prelims ?? []}
+              adminMode={true}
+              onSetWinner={setPrelimWinner}
+              onClearWinner={clearPrelimWinner}
+            />
+            <TournamentView
+              bracket={data.einzel}
+              roundDates={EINZEL_ROUND_DATES}
+              adminMode={true}
+              onSetWinner={setWinner}
+              onClearWinner={clearWinner}
+              onSetMeta={setMeta}
+            />
+          </>
         )}
       </div>
     </div>

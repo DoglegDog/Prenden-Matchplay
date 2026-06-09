@@ -10,9 +10,13 @@ export async function loadTournament(): Promise<Tournament> {
   try {
     const { kv } = await import('@vercel/kv');
     const data = await kv.get<Tournament>(KV_KEY);
-    return data ?? INITIAL_TOURNAMENT;
+    if (!data) return INITIAL_TOURNAMENT;
+    // Merge prelims for old stored data that predates the prelims field
+    return { ...data, prelims: data.prelims ?? INITIAL_TOURNAMENT.prelims };
   } catch {
-    return memStore ?? INITIAL_TOURNAMENT;
+    const data = memStore;
+    if (!data) return INITIAL_TOURNAMENT;
+    return { ...data, prelims: data.prelims ?? INITIAL_TOURNAMENT.prelims };
   }
 }
 

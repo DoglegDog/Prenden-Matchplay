@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { Tournament } from '@/lib/types';
 import TournamentView from '@/components/TournamentView';
+import PrelimSection from '@/components/PrelimSection';
 import { TEAM_ROUND_DATES, TEAM_ROUND_MODES, EINZEL_ROUND_DATES } from '@/lib/data';
 
 type Tab = 'team' | 'einzel';
@@ -39,10 +40,13 @@ export default function PublicBracket({ initialData }: { initialData: Tournament
           />
         )}
         {tab === 'einzel' && (
-          <TournamentView
-            bracket={initialData.einzel}
-            roundDates={EINZEL_ROUND_DATES}
-          />
+          <>
+            <PrelimSection prelims={initialData.prelims ?? []} />
+            <TournamentView
+              bracket={initialData.einzel}
+              roundDates={EINZEL_ROUND_DATES}
+            />
+          </>
         )}
 
         <footer className="gfd-footer">

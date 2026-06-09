@@ -1,4 +1,4 @@
-import { Match, Side, Tournament, TournamentBracket } from './types';
+import { Match, PrelimMatch, Side, Tournament, TournamentBracket } from './types';
 
 function m(id: string, p1: string | null = null, p2: string | null = null): Match {
   return { id, p1, p2, winner: null, loser: null, date: null };
@@ -79,6 +79,13 @@ const INITIAL_TOURNAMENT: Tournament = {
     final: m('team_final'),
     third: m('team_third'),
   },
+  prelims: [
+    { id: 'pre_el_5',  matchId: 'el_r1_5', slot: 'p2', p1: 'Licht',      p2: 'Barsin',    winner: null },
+    { id: 'pre_el_6',  matchId: 'el_r1_6', slot: 'p2', p1: 'Dreyer',     p2: 'Scheetz',   winner: null },
+    { id: 'pre_er_1',  matchId: 'er_r1_1', slot: 'p1', p1: 'Nguyen',     p2: 'Eichstädt', winner: null },
+    { id: 'pre_er_2',  matchId: 'er_r1_2', slot: 'p1', p1: 'Köhnkow',   p2: 'Christl',   winner: null },
+    { id: 'pre_er_5',  matchId: 'er_r1_5', slot: 'p1', p1: 'Schulenburg', p2: 'Lemke',    winner: null },
+  ] as PrelimMatch[],
   einzel: {
     left: {
       r1: [
@@ -87,8 +94,8 @@ const INITIAL_TOURNAMENT: Tournament = {
         m('el_r1_2', 'Königbauer', 'Weber'),
         m('el_r1_3', 'Buttke', 'Fischer'),
         m('el_r1_4', 'Hänel', 'L. Wieters'),
-        m('el_r1_5', 'Mrosack', 'Licht / Barsin'),
-        m('el_r1_6', 'Kinne', 'Dreyer / Scheetz'),
+        m('el_r1_5', 'Mrosack', null),       // p2 kommt aus Vorrunde: Licht vs. Barsin
+        m('el_r1_6', 'Kinne', null),          // p2 kommt aus Vorrunde: Dreyer vs. Scheetz
         m('el_r1_7', 'Müller', 'Trescher'),
       ],
       r2: Array.from({ length: 4 }, (_, i) => m(`el_r2_${i}`)),
@@ -98,11 +105,11 @@ const INITIAL_TOURNAMENT: Tournament = {
     right: {
       r1: [
         m('er_r1_0', 'Wetzel', 'Schumacher'),
-        m('er_r1_1', 'Nguyen / Eichstädt', 'Lenz'),
-        m('er_r1_2', 'Köhnkow / Christl', 'Hintz'),
+        m('er_r1_1', null, 'Lenz'),            // p1 kommt aus Vorrunde: Nguyen vs. Eichstädt
+        m('er_r1_2', null, 'Hintz'),           // p1 kommt aus Vorrunde: Köhnkow vs. Christl
         m('er_r1_3', 'Streckfuss', 'Arndt'),
         m('er_r1_4', 'Roberts', 'Kaelcke'),
-        m('er_r1_5', 'Schulenburg / Lemke', 'Eisenhart'),
+        m('er_r1_5', null, 'Eisenhart'),       // p1 kommt aus Vorrunde: Schulenburg vs. Lemke
         m('er_r1_6', 'Hinnenthal', 'Hundt'),
         m('er_r1_7', 'Wegner', 'Kühn'),
       ],
@@ -230,6 +237,37 @@ export function clearWinner(tournament: Tournament, matchId: string): Tournament
         match.winner = null;
         match.loser = null;
         match.result = null;
+        return t;
+      }
+    }
+  }
+  return t;
+}
+
+// Set winner of a prelim match and fill the corresponding r1 bracket slot
+export function setPrelimWinner(tournament: Tournament, prelimId: string, winner: string): Tournament {
+  const t = JSON.parse(JSON.stringify(tournament)) as Tournament;
+  const prelim = t.prelims.find(p => p.id === prelimId);
+  if (!prelim) return t;
+  prelim.winner = winner;
+  for (const side of ['left', 'right'] as const) {
+    for (const match of t.einzel[side].r1) {
+      if (match.id === prelim.matchId) { match[prelim.slot] = winner; return t; }
+    }
+  }
+  return t;
+}
+
+// Clear winner of a prelim match and empty the r1 slot (only if that r1 match is still unplayed)
+export function clearPrelimWinner(tournament: Tournament, prelimId: string): Tournament {
+  const t = JSON.parse(JSON.stringify(tournament)) as Tournament;
+  const prelim = t.prelims.find(p => p.id === prelimId);
+  if (!prelim) return t;
+  prelim.winner = null;
+  for (const side of ['left', 'right'] as const) {
+    for (const match of t.einzel[side].r1) {
+      if (match.id === prelim.matchId && !match.winner) {
+        match[prelim.slot] = null;
         return t;
       }
     }
