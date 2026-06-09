@@ -50,7 +50,7 @@ const INITIAL_TOURNAMENT: Tournament = {
       r1: [
         m('tl_r1_0', 'Lenz / Lenz', 'Nicklas / Eisenhart'),
         m('tl_r1_1', 'Ruffert / Ruffert', 'Melzig / Grzeskowitz'),
-        m('tl_r1_2', 'Streckfuss / Schulenburg', 'Stein / Hundt'),
+        m('tl_r1_2', 'Streckfuss / Grossmann', 'Stein / Hundt'),
         m('tl_r1_3', 'Hansen / Bartz', 'Hirsch / Schönwald'),
         m('tl_r1_4', 'Weber / Kühn', 'Buttke / Hänel'),
         m('tl_r1_5', 'Spahic / Grützke', 'Kinne / Kuske'),
@@ -70,7 +70,7 @@ const INITIAL_TOURNAMENT: Tournament = {
         m('tr_r1_4', 'Fiebing / Güres', 'Scheetz / Stäger'),
         m('tr_r1_5', 'Radtke / Mrosack', 'Ogden / Schißau'),
         m('tr_r1_6', 'Licht / Dannehl', 'Lemke / Barsin'),
-        m('tr_r1_7', 'Grossmann / Borde', 'Waibel / Römer'),
+        m('tr_r1_7', 'Schulenburg / Borde', 'Waibel / Römer'),
       ],
       r2: Array.from({ length: 4 }, (_, i) => m(`tr_r2_${i}`)),
       r3: Array.from({ length: 2 }, (_, i) => m(`tr_r3_${i}`)),

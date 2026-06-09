@@ -43,14 +43,11 @@ export default function BracketMatch({ match, adminMode, onSetWinner, onClearWin
 
   return (
     <div className="match-card-wrapper" style={{ position: 'relative', width: '100%', height: '100%' }}>
-      {/* Scheduled date above card */}
-      {(match.scheduledDate || (adminMode && !isDone)) && (
-        <div className="match-scheduled-date">
+      <div className="match-card">
+        {/* Date row — always reserves space so card height stays stable */}
+        <div className="match-date-row">
           {match.scheduledDate || ''}
         </div>
-      )}
-
-      <div className="match-card">
         {[match.p1, match.p2].map((player, idx) => {
           const isWinner = isDone && player === match.winner;
           const isLoser = isDone && player !== match.winner && player !== null;

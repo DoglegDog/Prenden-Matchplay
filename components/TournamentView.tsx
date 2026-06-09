@@ -14,7 +14,7 @@ interface Props {
 }
 
 // Must match BracketSide constants exactly
-const ROUND_W = 158;
+const ROUND_W = 190;
 const COL_GAP = 32;
 const SIDE_GAP = 16; // gap between bracket side and center column
 

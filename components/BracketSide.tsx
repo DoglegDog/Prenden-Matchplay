@@ -11,12 +11,12 @@ interface Props {
   onSetMeta?: (matchId: string, result: string, scheduledDate: string) => void;
 }
 
-const MATCH_H = 62;  // px height per match card
+const MATCH_H = 76;  // px height per match card (incl. 14px date row)
 const GAP = 6;       // px gap between match cards in R1
-const SLOT = MATCH_H + GAP; // 68px per R1 slot
+const SLOT = MATCH_H + GAP; // 82px per R1 slot
 
 const ROUNDS: Array<keyof Side> = ['r1', 'r2', 'r3', 'r4'];
-const ROUND_W = 158;
+const ROUND_W = 190;
 const COL_GAP = 32;
 
 function matchTop(roundIdx: number, matchIdx: number): number {
