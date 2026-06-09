@@ -415,6 +415,24 @@ body {
 }
 .meta-save-btn:hover { opacity: 0.85; }
 
+.meta-prelim-reset-btn {
+  margin-top: 4px;
+  padding: 5px 6px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 6px;
+  color: rgba(255,255,255,0.45);
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: left;
+}
+.meta-prelim-reset-btn:hover {
+  background: rgba(204,30,30,0.18);
+  border-color: #cc1e1e;
+  color: #fff;
+}
+
 /* ── Bracket scale for smaller screens ── */
 /* A 13" MacBook in full-screen is ~1280px. Total bracket width ≈ 1944px + 48px padding.
    We scale down so the full bracket fits without horizontal scroll on ≥1280px screens. */

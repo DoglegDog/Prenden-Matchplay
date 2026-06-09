@@ -82,16 +82,13 @@ export default function BracketMatch({
     const isLoser  = isDone && player !== match.winner && player !== null;
     const clickable = canPlay && !!player;
     const undoable  = adminMode && isWinner && !!onClearWinner;
-    // Prelim undo: prelim was decided, r1 not yet played → allow resetting prelim
-    const prelimUndoable = adminMode && !!prelim?.winner && !isDone && !!onClearPrelimWinner;
 
     function handleClick() {
-      if (undoable)       { onClearWinner!(match.id); return; }
-      if (prelimUndoable) { onClearPrelimWinner!(prelim!.id); return; }
-      if (clickable && player) onSetWinner?.(match.id, player);
+      if (undoable)              { onClearWinner!(match.id); return; }
+      if (clickable && player)   { onSetWinner?.(match.id, player); return; }
     }
 
-    const title = undoable || prelimUndoable ? 'Klicken zum Zurücksetzen' : undefined;
+    const title = undoable ? 'Klicken zum Zurücksetzen' : undefined;
 
     return (
       <div
@@ -101,7 +98,7 @@ export default function BracketMatch({
           idx === 0 ? 'border-b border-white/10' : '',
           isWinner ? 'winner' : '',
           isLoser  ? 'loser'  : '',
-          clickable || undoable || prelimUndoable ? 'clickable' : '',
+          clickable || undoable ? 'clickable' : '',
           // Subtle indicator that this slot came from a prelim
           prelim?.winner ? 'prelim-decided' : '',
         ].join(' ')}
@@ -159,6 +156,17 @@ export default function BracketMatch({
               onChange={e => setLocalResult(e.target.value)} onKeyDown={e => e.key === 'Enter' && saveMeta()} />
           </div>
           <button className="meta-save-btn" onClick={saveMeta}>Speichern</button>
+          {/* Vorrunde zurücksetzen — nur wenn Prelim entschieden und r1 noch unberührt */}
+          {[prelimP1, prelimP2].map((prelim, i) =>
+            prelim?.winner && !isDone ? (
+              <button key={i} className="meta-prelim-reset-btn" onClick={() => {
+                onClearPrelimWinner?.(prelim.id);
+                setEditing(false);
+              }}>
+                ↩ Vorrunde zurücksetzen ({prelim.p1} / {prelim.p2})
+              </button>
+            ) : null
+          )}
         </div>
       )}
     </div>
