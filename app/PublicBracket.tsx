@@ -14,7 +14,6 @@ export default function PublicBracket({ initialData }: { initialData: Tournament
       <div className="hero-bg" />
       <div className="page-content">
         <header className="site-header">
-          <img src="/prenden-logo.png" alt="Golf Club Berlin-Prenden" className="site-logo" />
           <div>
             <div className="site-title">Matchplay 2026</div>
             <div className="site-subtitle">Golf Club Berlin-Prenden</div>

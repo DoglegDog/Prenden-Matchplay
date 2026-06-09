@@ -64,7 +64,6 @@ export default function AdminPage() {
         <div className="hero-bg" />
         <div className="page-content pw-screen">
           <div className="pw-card">
-            <img src="/prenden-logo.png" alt="Logo" style={{ width: 56, margin: '0 auto 16px' }} />
             <div style={{ fontWeight: 700, fontSize: '1.1rem' }}>Admin-Bereich</div>
             <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.45)', marginTop: 4 }}>
               Matchplay 2026 – Golf Club Berlin-Prenden
@@ -94,7 +93,6 @@ export default function AdminPage() {
       <div className="hero-bg" />
       <div className="page-content">
         <header className="site-header">
-          <img src="/prenden-logo.png" alt="Golf Club Berlin-Prenden" className="site-logo" />
           <div>
             <div className="site-title">Matchplay 2026 – Admin</div>
             <div className="site-subtitle">Golf Club Berlin-Prenden</div>
