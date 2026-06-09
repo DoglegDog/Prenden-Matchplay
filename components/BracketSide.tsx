@@ -1,13 +1,16 @@
 'use client';
-import { Side, Match } from '@/lib/types';
+import { Side, Match, PrelimMatch } from '@/lib/types';
 import BracketMatch from './BracketMatch';
 
 interface Props {
   side: Side;
   mirror?: boolean;
   adminMode?: boolean;
+  prelims?: PrelimMatch[];
   onSetWinner?: (matchId: string, winner: string) => void;
   onClearWinner?: (matchId: string) => void;
+  onSetPrelimWinner?: (prelimId: string, winner: string) => void;
+  onClearPrelimWinner?: (prelimId: string) => void;
   onSetMeta?: (matchId: string, result: string, scheduledDate: string) => void;
 }
 
@@ -27,7 +30,7 @@ function matchTop(roundIdx: number, matchIdx: number): number {
 }
 
 
-export default function BracketSide({ side, mirror = false, adminMode, onSetWinner, onClearWinner, onSetMeta }: Props) {
+export default function BracketSide({ side, mirror = false, adminMode, prelims, onSetWinner, onClearWinner, onSetPrelimWinner, onClearPrelimWinner, onSetMeta }: Props) {
   const totalHeight = 8 * SLOT;
   const totalWidth = ROUNDS.length * ROUND_W + (ROUNDS.length - 1) * COL_GAP;
 
@@ -93,9 +96,13 @@ export default function BracketSide({ side, mirror = false, adminMode, onSetWinn
             >
               <BracketMatch
                 match={match}
+                prelimP1={prelims?.find(p => p.matchId === match.id && p.slot === 'p1')}
+                prelimP2={prelims?.find(p => p.matchId === match.id && p.slot === 'p2')}
                 adminMode={adminMode}
                 onSetWinner={onSetWinner}
                 onClearWinner={onClearWinner}
+                onSetPrelimWinner={onSetPrelimWinner}
+                onClearPrelimWinner={onClearPrelimWinner}
                 onSetMeta={onSetMeta}
               />
             </div>

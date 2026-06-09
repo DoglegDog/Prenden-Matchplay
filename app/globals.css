@@ -427,6 +427,48 @@ body {
   }
 }
 
+/* ── Prelim split slot (two candidates in one bracket slot) ── */
+.prelim-split-slot {
+  flex-direction: column !important;
+  padding: 0 !important;
+  gap: 0;
+}
+
+.prelim-half {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  font-size: 0.63rem;
+  color: rgba(255,255,255,0.65);
+  min-height: 0;
+}
+
+.prelim-half-top {
+  border-bottom: 1px dashed rgba(255,255,255,0.12);
+}
+
+.prelim-half-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.prelim-half-clickable {
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.prelim-half-clickable:hover {
+  background: rgba(0, 195, 149, 0.2);
+  color: #fff;
+}
+
+/* Subtle left border to indicate "came from prelim" */
+.prelim-decided {
+  border-left: 2px solid rgba(0, 195, 149, 0.35) !important;
+}
+
 /* ── Vorrunde / Prelim Section ── */
 .prelim-section {
   padding: 16px 24px 8px;

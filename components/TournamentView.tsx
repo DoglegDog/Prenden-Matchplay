@@ -1,6 +1,6 @@
 'use client';
 import { useRef, useState, useEffect } from 'react';
-import { TournamentBracket } from '@/lib/types';
+import { TournamentBracket, PrelimMatch } from '@/lib/types';
 import BracketSide from './BracketSide';
 import BracketMatch from './BracketMatch';
 
@@ -8,9 +8,12 @@ interface Props {
   bracket: TournamentBracket;
   roundDates: Record<string, string>;
   roundModes?: Record<string, string>;
+  prelims?: PrelimMatch[];
   adminMode?: boolean;
   onSetWinner?: (matchId: string, winner: string) => void;
   onClearWinner?: (matchId: string) => void;
+  onSetPrelimWinner?: (prelimId: string, winner: string) => void;
+  onClearPrelimWinner?: (prelimId: string) => void;
   onSetMeta?: (matchId: string, result: string, scheduledDate: string) => void;
 }
 
@@ -36,7 +39,7 @@ const THIRD_TOP  = matchTop(2, 1);  // 451px — unteres Viertelfinale
 const ROUNDS_L = ['r1', 'r2', 'r3', 'r4'] as const;
 const ROUND_LABELS = ['1. Runde', 'Achtelfinale', 'Viertelfinale', 'Halbfinale'];
 
-export default function TournamentView({ bracket, roundDates, roundModes, adminMode, onSetWinner, onClearWinner, onSetMeta }: Props) {
+export default function TournamentView({ bracket, roundDates, roundModes, prelims, adminMode, onSetWinner, onClearWinner, onSetPrelimWinner, onClearPrelimWinner, onSetMeta }: Props) {
   const leftRounds = ROUNDS_L;
   const rightRounds = [...ROUNDS_L].reverse();
   const rightLabels = [...ROUND_LABELS].reverse();
@@ -103,7 +106,7 @@ export default function TournamentView({ bracket, roundDates, roundModes, adminM
 
       {/* ── Bracket row ── */}
       <div style={{ display: 'flex', gap: SIDE_GAP, alignItems: 'flex-start' }}>
-        <BracketSide side={bracket.left} adminMode={adminMode} onSetWinner={onSetWinner} onClearWinner={onClearWinner} onSetMeta={onSetMeta} />
+        <BracketSide side={bracket.left} adminMode={adminMode} prelims={prelims} onSetWinner={onSetWinner} onClearWinner={onClearWinner} onSetPrelimWinner={onSetPrelimWinner} onClearPrelimWinner={onClearPrelimWinner} onSetMeta={onSetMeta} />
 
         {/* Center: Finale + 3. Platz — absolut positioniert auf Viertelfinale-Höhe */}
         <div style={{ position: 'relative', width: 200, height: TOTAL_H, flexShrink: 0 }}>
@@ -125,7 +128,7 @@ export default function TournamentView({ bracket, roundDates, roundModes, adminM
           </div>
         </div>
 
-        <BracketSide side={bracket.right} mirror adminMode={adminMode} onSetWinner={onSetWinner} onClearWinner={onClearWinner} onSetMeta={onSetMeta} />
+        <BracketSide side={bracket.right} mirror adminMode={adminMode} prelims={prelims} onSetWinner={onSetWinner} onClearWinner={onClearWinner} onSetPrelimWinner={onSetPrelimWinner} onClearPrelimWinner={onClearPrelimWinner} onSetMeta={onSetMeta} />
       </div>
       </div>{/* end inner padding wrapper */}
     </div>

@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react';
 import { Tournament } from '@/lib/types';
 import TournamentView from '@/components/TournamentView';
-import PrelimSection from '@/components/PrelimSection';
 import { TEAM_ROUND_DATES, TEAM_ROUND_MODES, EINZEL_ROUND_DATES } from '@/lib/data';
 
 type Tab = 'team' | 'einzel';
@@ -168,22 +167,17 @@ export default function AdminPage() {
           />
         )}
         {tab === 'einzel' && (
-          <>
-            <PrelimSection
-              prelims={data.prelims ?? []}
-              adminMode={true}
-              onSetWinner={setPrelimWinner}
-              onClearWinner={clearPrelimWinner}
-            />
-            <TournamentView
-              bracket={data.einzel}
-              roundDates={EINZEL_ROUND_DATES}
-              adminMode={true}
-              onSetWinner={setWinner}
-              onClearWinner={clearWinner}
-              onSetMeta={setMeta}
-            />
-          </>
+          <TournamentView
+            bracket={data.einzel}
+            roundDates={EINZEL_ROUND_DATES}
+            prelims={data.prelims ?? []}
+            adminMode={true}
+            onSetWinner={setWinner}
+            onClearWinner={clearWinner}
+            onSetPrelimWinner={setPrelimWinner}
+            onClearPrelimWinner={clearPrelimWinner}
+            onSetMeta={setMeta}
+          />
         )}
       </div>
     </div>
