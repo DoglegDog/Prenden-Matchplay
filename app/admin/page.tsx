@@ -45,6 +45,15 @@ export default function AdminPage() {
     if (res.ok) setData(await res.json());
   }
 
+  async function clearWinner(matchId: string) {
+    const res = await fetch('/api/bracket', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'clearWinner', matchId, password }),
+    });
+    if (res.ok) setData(await res.json());
+  }
+
   async function setMeta(matchId: string, result: string, scheduledDate: string) {
     const res = await fetch('/api/bracket', {
       method: 'POST',
@@ -135,6 +144,7 @@ export default function AdminPage() {
             roundModes={TEAM_ROUND_MODES}
             adminMode={true}
             onSetWinner={setWinner}
+            onClearWinner={clearWinner}
             onSetMeta={setMeta}
           />
         )}
@@ -144,6 +154,7 @@ export default function AdminPage() {
             roundDates={EINZEL_ROUND_DATES}
             adminMode={true}
             onSetWinner={setWinner}
+            onClearWinner={clearWinner}
             onSetMeta={setMeta}
           />
         )}

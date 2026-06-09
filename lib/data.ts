@@ -173,6 +173,70 @@ export function advanceWinner(tournament: Tournament, matchId: string, winner: s
   return t;
 }
 
+// Remove winner from a match and clear it from subsequent rounds
+export function clearWinner(tournament: Tournament, matchId: string): Tournament {
+  const t = JSON.parse(JSON.stringify(tournament)) as Tournament;
+  const rounds: Array<keyof Side> = ['r1', 'r2', 'r3', 'r4'];
+
+  for (const tournType of ['team', 'einzel'] as const) {
+    for (const side of ['left', 'right'] as const) {
+      const bracket = t[tournType][side];
+      for (let ri = 0; ri < rounds.length; ri++) {
+        const round = rounds[ri];
+        for (let mi = 0; mi < bracket[round].length; mi++) {
+          const match = bracket[round][mi];
+          if (match.id !== matchId) continue;
+
+          const prevWinner = match.winner;
+          match.winner = null;
+          match.loser = null;
+          match.result = null;
+
+          // Remove the winner from the next round
+          if (ri < rounds.length - 1) {
+            const nextRound = rounds[ri + 1];
+            const nextIdx = Math.floor(mi / 2);
+            const slot: 'p1' | 'p2' = mi % 2 === 0 ? 'p1' : 'p2';
+            const nextMatch = bracket[nextRound][nextIdx];
+            if (nextMatch[slot] === prevWinner) {
+              nextMatch[slot] = null;
+              // Cascade: if next match also has a winner, clear it too
+              if (nextMatch.winner) {
+                t[tournType][side] = bracket; // ensure mutations visible
+                clearWinner(t, nextMatch.id);
+              }
+            }
+          } else {
+            // r4 → clear final/third
+            const fin = t[tournType].final;
+            const thr = t[tournType].third;
+            const finSlot: 'p1' | 'p2' = side === 'left' ? 'p1' : 'p2';
+            if (fin[finSlot] === prevWinner) {
+              fin[finSlot] = null;
+              if (fin.winner) { fin.winner = null; fin.loser = null; fin.result = null; }
+            }
+            if (thr[finSlot] === prevWinner) {
+              thr[finSlot] = null;
+              if (thr.winner) { thr.winner = null; thr.loser = null; thr.result = null; }
+            }
+          }
+          return t;
+        }
+      }
+    }
+    for (const matchKey of ['final', 'third'] as const) {
+      const match = t[tournType][matchKey];
+      if (match.id === matchId) {
+        match.winner = null;
+        match.loser = null;
+        match.result = null;
+        return t;
+      }
+    }
+  }
+  return t;
+}
+
 // Update result and/or scheduled date for a match
 export function setMatchMeta(
   tournament: Tournament,

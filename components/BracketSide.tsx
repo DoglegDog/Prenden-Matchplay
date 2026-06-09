@@ -7,6 +7,7 @@ interface Props {
   mirror?: boolean;
   adminMode?: boolean;
   onSetWinner?: (matchId: string, winner: string) => void;
+  onClearWinner?: (matchId: string) => void;
   onSetMeta?: (matchId: string, result: string, scheduledDate: string) => void;
 }
 
@@ -26,7 +27,7 @@ function matchTop(roundIdx: number, matchIdx: number): number {
 }
 
 
-export default function BracketSide({ side, mirror = false, adminMode, onSetWinner, onSetMeta }: Props) {
+export default function BracketSide({ side, mirror = false, adminMode, onSetWinner, onClearWinner, onSetMeta }: Props) {
   const totalHeight = 8 * SLOT;
   const totalWidth = ROUNDS.length * ROUND_W + (ROUNDS.length - 1) * COL_GAP;
 
@@ -94,6 +95,7 @@ export default function BracketSide({ side, mirror = false, adminMode, onSetWinn
                 match={match}
                 adminMode={adminMode}
                 onSetWinner={onSetWinner}
+                onClearWinner={onClearWinner}
                 onSetMeta={onSetMeta}
               />
             </div>

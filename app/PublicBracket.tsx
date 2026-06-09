@@ -44,6 +44,16 @@ export default function PublicBracket({ initialData }: { initialData: Tournament
             roundDates={EINZEL_ROUND_DATES}
           />
         )}
+
+        <footer className="gfd-footer">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="https://www.greenfee-deals.de/logo-light.svg" alt="GreenfeeDeals" className="gfd-footer-logo" />
+          <div className="gfd-footer-text">
+            Mit freundlicher Unterstützung von{' '}
+            <a href="https://www.greenfee-deals.de" target="_blank" rel="noopener noreferrer">GreenfeeDeals</a>
+            {' '}– dein Durchblick im Greenfee-Dschungel
+          </div>
+        </footer>
       </div>
     </div>
   );

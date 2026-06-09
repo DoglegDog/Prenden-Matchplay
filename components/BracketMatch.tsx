@@ -6,10 +6,11 @@ interface Props {
   match: Match;
   adminMode?: boolean;
   onSetWinner?: (matchId: string, winner: string) => void;
+  onClearWinner?: (matchId: string) => void;
   onSetMeta?: (matchId: string, result: string, scheduledDate: string) => void;
 }
 
-export default function BracketMatch({ match, adminMode, onSetWinner, onSetMeta }: Props) {
+export default function BracketMatch({ match, adminMode, onSetWinner, onClearWinner, onSetMeta }: Props) {
   const canPlay = adminMode && match.p1 && match.p2 && !match.winner;
   const isDone = !!match.winner;
   const [editing, setEditing] = useState(false);
@@ -54,6 +55,12 @@ export default function BracketMatch({ match, adminMode, onSetWinner, onSetMeta 
           const isWinner = isDone && player === match.winner;
           const isLoser = isDone && player !== match.winner && player !== null;
           const clickable = canPlay && !!player;
+          const undoable = adminMode && isWinner && !!onClearWinner;
+
+          function handleClick() {
+            if (undoable) { onClearWinner!(match.id); return; }
+            if (clickable && player) onSetWinner?.(match.id, player);
+          }
 
           return (
             <div
@@ -63,9 +70,10 @@ export default function BracketMatch({ match, adminMode, onSetWinner, onSetMeta 
                 idx === 0 ? 'border-b border-white/10' : '',
                 isWinner ? 'winner' : '',
                 isLoser ? 'loser' : '',
-                clickable ? 'clickable' : '',
+                clickable || undoable ? 'clickable' : '',
               ].join(' ')}
-              onClick={() => clickable && player && onSetWinner?.(match.id, player)}
+              onClick={handleClick}
+              title={undoable ? 'Klicken zum Zurücksetzen' : undefined}
             >
               <span className="player-name">
                 {player ?? <span className="text-white/25 italic text-xs">–</span>}
