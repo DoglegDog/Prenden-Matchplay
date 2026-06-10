@@ -81,12 +81,13 @@ export default function AdminPage() {
     if (res.ok) setData(await res.json());
   }
 
-  async function reset() {
-    if (!confirm('Wirklich alles zurücksetzen? Alle Ergebnisse werden gelöscht.')) return;
+  async function reset(scope: 'team' | 'einzel') {
+    const label = scope === 'team' ? 'Team-Matchplay' : 'Einzel-Matchplay';
+    if (!confirm(`${label} wirklich zurücksetzen? Alle Ergebnisse dieses Bereichs werden gelöscht.`)) return;
     const res = await fetch('/api/bracket', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'reset', password }),
+      body: JSON.stringify({ action: 'reset', scope, password }),
     });
     if (res.ok) setData(await res.json());
   }
@@ -140,7 +141,9 @@ export default function AdminPage() {
             <a href="/" style={{ padding: '6px 14px', fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)', textDecoration: 'none' }}>
               ← Zur Übersicht
             </a>
-            <button className="reset-btn" onClick={reset}>Alles zurücksetzen</button>
+            <button className="reset-btn" onClick={() => reset(tab)}>
+              {tab === 'team' ? 'Team' : 'Einzel'} zurücksetzen
+            </button>
           </div>
         </div>
 

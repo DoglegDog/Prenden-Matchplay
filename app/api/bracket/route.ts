@@ -21,7 +21,9 @@ export async function POST(req: NextRequest) {
   }
 
   if (action === 'reset') {
-    const fresh = await resetTournament();
+    const scope: 'team' | 'einzel' | 'all' = body.scope ?? 'all';
+    const current = await loadTournament();
+    const fresh = await resetTournament(scope, current);
     return NextResponse.json(fresh);
   }
 

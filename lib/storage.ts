@@ -29,8 +29,23 @@ export async function saveTournament(data: Tournament): Promise<void> {
   }
 }
 
-export async function resetTournament(): Promise<Tournament> {
-  const fresh = JSON.parse(JSON.stringify(INITIAL_TOURNAMENT)) as Tournament;
-  await saveTournament(fresh);
-  return fresh;
+export async function resetTournament(
+  scope: 'team' | 'einzel' | 'all' = 'all',
+  current?: Tournament,
+): Promise<Tournament> {
+  const initial = JSON.parse(JSON.stringify(INITIAL_TOURNAMENT)) as Tournament;
+  if (scope === 'all') {
+    await saveTournament(initial);
+    return initial;
+  }
+  const base = current ?? await loadTournament();
+  const updated: Tournament = {
+    ...base,
+    [scope]: initial[scope],
+    prelims: scope === 'einzel'
+      ? initial.prelims
+      : base.prelims,
+  };
+  await saveTournament(updated);
+  return updated;
 }
