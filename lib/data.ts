@@ -51,7 +51,7 @@ const INITIAL_TOURNAMENT: Tournament = {
         m('tl_r1_0', 'Lenz / Lenz', 'Nicklas / Eisenhart'),
         m('tl_r1_1', 'Ruffert / Ruffert', 'Melzig / Grzeskowitz'),
         m('tl_r1_2', 'Streckfuss / Grossmann', 'Stein / Hundt'),
-        m('tl_r1_3', 'Hansen / Bartz', 'Hirsch / Schönwald'),
+        m('tl_r1_3', 'Schaeffer / Handl', 'Hirsch / Schönwald'),
         m('tl_r1_4', 'Weber / Kühn', 'Buttke / Hänel'),
         m('tl_r1_5', 'Spahic / Grützke', 'Kinne / Kuske'),
         m('tl_r1_6', 'Lüker / Sawinski', 'Heck / Heck'),
