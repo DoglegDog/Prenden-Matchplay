@@ -24,8 +24,10 @@ const SIDE_GAP = 16;
 const PADDING = 24;
 const SLOT = 82;       // MATCH_H(76) + GAP(6)
 const TOTAL_H = 8 * SLOT; // 656px
+const HEADER_H = 62;   // round-label + round-mode + round-date rows + gap (~52px) + buffer
 const BRACKET_SIDE_W = 4 * ROUND_W + 3 * COL_GAP; // 856px
 const NATURAL_W = 2 * BRACKET_SIDE_W + 200 + 2 * SIDE_GAP + 2 * PADDING; // 1992px
+const NATURAL_H = TOTAL_H + HEADER_H; // 718px — used for explicit clip-wrapper height
 
 function matchTop(roundIdx: number, matchIdx: number) {
   const slotsPerMatch = Math.pow(2, roundIdx);
@@ -60,15 +62,15 @@ export default function TournamentView({ bracket, roundDates, roundModes, prelim
   }, []);
 
   return (
-    // Outer: misst die verfügbare Breite, kein overflow
-    <div ref={outerRef} style={{ overflow: 'hidden', paddingTop: 8, paddingBottom: 40 }}>
+    // Outer: misst nur die verfügbare Breite — kein overflow, keine Höhenbeschränkung
+    <div ref={outerRef} style={{ paddingTop: 8, paddingBottom: 40 }}>
+      {/* Clip-Wrapper: explizite visuelle Höhe verhindert Scroll-Artefakte bei transform+overflow */}
+      <div style={{ height: `${NATURAL_H * scale}px`, overflow: 'hidden' }}>
       {/* Inneres Div: skaliert den gesamten Bracket-Inhalt */}
       <div style={{
         width: NATURAL_W,
         transformOrigin: 'top left',
         transform: `scale(${scale})`,
-        // Höhe des skalierten Inhalts für den äußeren Container reservieren
-        marginBottom: `calc((${TOTAL_H + 80}px * ${scale}) - ${TOTAL_H + 80}px)`,
         padding: `0 ${PADDING}px`,
         boxSizing: 'border-box',
       }}>
@@ -130,7 +132,8 @@ export default function TournamentView({ bracket, roundDates, roundModes, prelim
 
         <BracketSide side={bracket.right} mirror adminMode={adminMode} prelims={prelims} onSetWinner={onSetWinner} onClearWinner={onClearWinner} onSetPrelimWinner={onSetPrelimWinner} onClearPrelimWinner={onClearPrelimWinner} onSetMeta={onSetMeta} />
       </div>
-      </div>{/* end inner padding wrapper */}
+      </div>{/* end inner scaling div */}
+      </div>{/* end clip-wrapper */}
     </div>
   );
 }

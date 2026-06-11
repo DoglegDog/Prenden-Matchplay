@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { Tournament } from '@/lib/types';
 import TournamentView from '@/components/TournamentView';
+import MobileBracketView from '@/components/MobileBracketView';
 import { TEAM_ROUND_DATES, TEAM_ROUND_MODES, EINZEL_ROUND_DATES } from '@/lib/data';
 
 type Tab = 'team' | 'einzel';
@@ -20,31 +21,44 @@ export default function PublicBracket({ initialData }: { initialData: Tournament
           </div>
         </header>
 
-        <div style={{ textAlign: 'center' }}>
-          <div className="tabs">
-            <button className={`tab-btn ${tab === 'team' ? 'active' : ''}`} onClick={() => setTab('team')}>
-              Team-Matchplay
-            </button>
-            <button className={`tab-btn ${tab === 'einzel' ? 'active' : ''}`} onClick={() => setTab('einzel')}>
-              Einzel-Matchplay
-            </button>
-          </div>
+        {/* ── Mobile view (< 768px) ── */}
+        <div className="md:hidden" style={{ paddingTop: 20 }}>
+          <MobileBracketView
+            tournament={initialData}
+            teamRoundDates={TEAM_ROUND_DATES}
+            teamRoundModes={TEAM_ROUND_MODES}
+            einzelRoundDates={EINZEL_ROUND_DATES}
+          />
         </div>
 
-        {tab === 'team' && (
-          <TournamentView
-            bracket={initialData.team}
-            roundDates={TEAM_ROUND_DATES}
-            roundModes={TEAM_ROUND_MODES}
-          />
-        )}
-        {tab === 'einzel' && (
-          <TournamentView
-            bracket={initialData.einzel}
-            roundDates={EINZEL_ROUND_DATES}
-            prelims={initialData.prelims ?? []}
-          />
-        )}
+        {/* ── Desktop view (≥ 768px) ── */}
+        <div className="hidden md:block">
+          <div style={{ textAlign: 'center' }}>
+            <div className="tabs">
+              <button className={`tab-btn ${tab === 'team' ? 'active' : ''}`} onClick={() => setTab('team')}>
+                Team-Matchplay
+              </button>
+              <button className={`tab-btn ${tab === 'einzel' ? 'active' : ''}`} onClick={() => setTab('einzel')}>
+                Einzel-Matchplay
+              </button>
+            </div>
+          </div>
+
+          {tab === 'team' && (
+            <TournamentView
+              bracket={initialData.team}
+              roundDates={TEAM_ROUND_DATES}
+              roundModes={TEAM_ROUND_MODES}
+            />
+          )}
+          {tab === 'einzel' && (
+            <TournamentView
+              bracket={initialData.einzel}
+              roundDates={EINZEL_ROUND_DATES}
+              prelims={initialData.prelims ?? []}
+            />
+          )}
+        </div>
 
         <footer className="gfd-footer">
           {/* eslint-disable-next-line @next/next/no-img-element */}
